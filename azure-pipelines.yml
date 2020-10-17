@@ -9,12 +9,11 @@ pool:
 steps:
 - task: DownloadBuildArtifacts@0
   inputs:
-    source: 'specific'
+    buildType: 'specific'
     project: 'sandbox'
-    pipeline: 3
+    definition: 3
     buildVersionToDownload: 'latestFromBranch'
     branchName: 'refs/heads/main'
-    #buildId: 7
     downloadType: 'single'
     artifactName: 'bin'
     downloadPath: '$(System.ArtifactsDirectory)'
