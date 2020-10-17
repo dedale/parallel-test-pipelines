@@ -7,11 +7,14 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- task: DownloadPipelineArtifact@2
+- task: DownloadBuildArtifacts@0
   inputs:
     source: 'specific'
     project: 'sandbox'
     pipeline: 3
-    runVersion: 'latestFromBranch'
-    runBranch: 'refs/heads/main'
-    #tags: 'testTag'
+    buildVersionToDownload: 'latestFromBranch'
+    branchName: 'refs/heads/main'
+    #buildId: 7
+    downloadType: 'single'
+    artifactName: 'bin'
+    downloadPath: '$(System.ArtifactsDirectory)'
