@@ -45,3 +45,9 @@ jobs:
       downloadPath: '$(System.ArtifactsDirectory)'
 
   - powershell: .\test.ps1
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: '.tests/*.xml'
+      failTaskOnFailedTests: true
