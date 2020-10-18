@@ -37,3 +37,5 @@ steps:
     downloadType: 'single'
     artifactName: 'bin'
     downloadPath: '$(System.ArtifactsDirectory)'
+
+- powershell: .\test.ps1
