@@ -1,10 +1,9 @@
 ﻿using NUnit.Engine;
-using NUnit.Engine.Runners;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace NUnitAdapter
 {
@@ -13,7 +12,6 @@ namespace NUnitAdapter
         static void Main(string[] args)
         {
             using (var engine = TestEngineActivator.CreateInstance())
-            //using (var engine = new TestEngine())
             {
 #if NETFRAMEWORK
                 var binPath = args.FirstOrDefault() ?? @"D:\prog\git\hub\dedale\dummy-for-pipelines\.build\bin\net48";
@@ -23,47 +21,36 @@ namespace NUnitAdapter
 #endif
 
                 engine.WorkDirectory = binPath;
-                //engine.InternalTraceLevel = InternalTraceLevel.Verbose;
                 engine.Initialize();
-
-                //engine.Services.GetService<IDriverService>().GetDriver()
 
                 foreach (var path in Directory.GetFiles(binPath, "*Tests.dll"))
                 {
-                    Console.WriteLine(path);
-
-                    //var assembly = Assembly.LoadFrom(path);
-                    //Console.WriteLine(assembly.FullName);
+                    Console.WriteLine($"Exploring {path}...");
 
                     var package = new TestPackage(path);
-                    package.AddSetting("DomainUsage", "None"); // Single? None?
-                    //package.AddSetting("ProcessModel", "InProcess"); // Single? InProcess?
+#if NETCOREAPP
+                    package.AddSetting("DomainUsage", "None");
+#endif
+#if NETFRAMEWORK
+                    package.AddSetting("DomainUsage", "Single");
+                    package.AddSetting("BasePath", binPath);
+#endif
                     package.AddSetting("DisposeRunners", true);
-                    //package.Settings["BasePath"] = binPath;
-                    //package.Settings["InternalTraceLevel"] = "Verbose";
                     try
                     {
                         using (var runner = engine.GetRunner(package))
                         {
-                            Console.WriteLine(runner.GetType().FullName);
-                            //var driverService = engine.Services.GetService<IDriverService>();
-                            //var driver = driverService.GetDriver(AppDomain.CurrentDomain, path, "netcoreapp3.1", true);
-                            //Console.WriteLine(driver.GetType().FullName);
-                            //var loaded = driver.Load(path, package.Settings);
-                            //Console.WriteLine(loaded);
-                            //var explored = driver.Explore(null);
-                            //Console.WriteLine(explored);
-
                             var xml = runner.Explore(TestFilter.Empty);
-                            Console.WriteLine(xml.OuterXml);
+                            var doc = XDocument.Parse(xml.OuterXml);
+                            doc.XPathSelectElements("//test-run")
+                                .ToList()
+                                .ForEach(e => Console.WriteLine($"Explored {e.Attribute("name").Value}, found {e.Attribute("testcasecount").Value} test(s)"));
                             runner.Unload();
                         }
                     }
                     catch (Exception e)
                     {
-                        Console.Error.WriteLine($"{e.GetType().Name} {e.Message}");
-                        if (e.InnerException != null)
-                            Console.Error.WriteLine($"  {e.InnerException.GetType().Name} {e.InnerException.Message}");
+                        Console.Error.WriteLine(e.ToString());
                     }
                 }
             }

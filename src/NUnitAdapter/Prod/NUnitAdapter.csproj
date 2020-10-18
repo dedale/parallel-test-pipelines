@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<!--<TargetFramework>net48</TargetFramework>-->
+		<TargetFrameworks>netcoreapp3.1;net48</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,8 +10,11 @@
     <None Remove="C:\Users\ded\.nuget\packages\nunit.engine\3.11.1\contentFiles\any\netstandard2.0\nunit.engine.nuget.addins" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <PackageReference Include="NUnit.Engine" Version="3.12.0-beta1" />
   </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+		<PackageReference Include="NUnit.Engine" Version="3.11.1" />
+	</ItemGroup>
 
 </Project>
