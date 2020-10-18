@@ -62,9 +62,11 @@ namespace NUnitAdapter
                                 .ToList();
                             fixtures.Sort(CompareFixtures);
                             fixtures.Reverse();
-                            foreach (var fixture in fixtures)
+                            var jobPosition = int.Parse(Environment.GetEnvironmentVariable("SYSTEM_JOBPOSITIONINPHASE") ?? "1");
+                            var jobTotal = int.Parse(Environment.GetEnvironmentVariable("SYSTEM_TOTALJOBSINPHASE") ?? "1");
+                            foreach (var (fixture, ith) in fixtures.Select((fixture, ith) => (fixture, ith)).Where(x => x.ith % jobTotal == jobPosition - 1))
                             {
-                                Console.WriteLine($"Running {fixture}...");
+                                Console.WriteLine($"Running {fixture} #{ith}...");
                                 xml = runner.Run(new Listener(), TestFilter.Empty);
                             }
                             runner.Unload();

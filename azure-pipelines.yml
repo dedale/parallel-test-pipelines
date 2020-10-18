@@ -6,36 +6,42 @@
 trigger:
 - main
 
-pool:
-  vmImage: 'windows-latest'
-
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
-- task: NuGetToolInstaller@1
+jobs:
+- job: Job
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+  pool:
+    vmImage: 'windows-latest'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  strategy:
+    parallel: 10
 
-- task: DownloadBuildArtifacts@0
-  inputs:
-    buildType: 'specific'
-    project: 'sandbox'
-    definition: 3
-    buildVersionToDownload: 'latestFromBranch'
-    branchName: 'refs/heads/main'
-    downloadType: 'single'
-    artifactName: 'bin'
-    downloadPath: '$(System.ArtifactsDirectory)'
+  steps:
+  - task: NuGetToolInstaller@1
 
-- powershell: .\test.ps1
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: '$(solution)'
+
+  - task: VSBuild@1
+    inputs:
+      solution: '$(solution)'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: 'specific'
+      project: 'sandbox'
+      definition: 3
+      buildVersionToDownload: 'latestFromBranch'
+      branchName: 'refs/heads/main'
+      downloadType: 'single'
+      artifactName: 'bin'
+      downloadPath: '$(System.ArtifactsDirectory)'
+
+  - powershell: .\test.ps1
