@@ -11,43 +11,76 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-jobs:
-- job: Job
+stages:
+- stage: Build
 
-  pool:
-    vmImage: 'windows-latest'
+  jobs:
+  - job: Job
 
-  strategy:
-    parallel: 10
+    pool:
+      vmImage: 'windows-latest'
 
-  steps:
-  - task: NuGetToolInstaller@1
+    steps:
+    - task: NuGetToolInstaller@1
+    
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
 
-  - task: NuGetCommand@2
-    inputs:
-      restoreSolution: '$(solution)'
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)/.build/bin'
+        contents: '**'
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: adapter
 
-  - task: VSBuild@1
-    inputs:
-      solution: '$(solution)'
-      platform: '$(buildPlatform)'
-      configuration: '$(buildConfiguration)'
+- stage: Tests
 
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      buildType: 'specific'
-      project: 'sandbox'
-      definition: 3
-      buildVersionToDownload: 'latestFromBranch'
-      branchName: 'refs/heads/main'
-      downloadType: 'single'
-      artifactName: 'bin'
-      downloadPath: '$(System.ArtifactsDirectory)'
+  dependsOn: Build
 
-  - powershell: .\test.ps1
+  jobs:
+  - job: Job
+  
+    pool:
+      vmImage: 'windows-latest'
+  
+    strategy:
+      parallel: 10
+  
+    steps:
 
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFormat: NUnit
-      testResultsFiles: '.tests/*.xml'
-      failTaskOnFailedTests: true
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadType: 'single'
+        artifactName: 'adapter'
+        downloadPath: '$(System.ArtifactsDirectory)/adapter'
+  
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'specific'
+        project: 'sandbox'
+        definition: 3
+        buildVersionToDownload: 'latestFromBranch'
+        branchName: 'refs/heads/main'
+        downloadType: 'single'
+        artifactName: 'bin'
+        downloadPath: '$(System.ArtifactsDirectory)/dummy'
+  
+    - powershell: .\test.ps1
+  
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: NUnit
+        testResultsFiles: '.tests/*.xml'
+        failTaskOnFailedTests: true
+

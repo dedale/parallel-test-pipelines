@@ -37,13 +37,13 @@ if (Test-Path $TestsPath) {
 }
 
 try {
-    Invoke-Expression "${Env:BUILD_SOURCESDIRECTORY}\.build\bin\netcoreapp3.1\NUnitAdapter.exe ${Env:SYSTEM_ARTIFACTSDIRECTORY}\bin\netcoreapp3.1"
+    Invoke-Expression "${Env:SYSTEM_ARTIFACTSDIRECTORY}\adapter\bin\netcoreapp3.1\NUnitAdapter.exe ${Env:SYSTEM_ARTIFACTSDIRECTORY}\dummy\bin\netcoreapp3.1"
 } catch {
     ExitWithCode 1
 }
 
 try {
-    Invoke-Expression "${Env:BUILD_SOURCESDIRECTORY}\.build\bin\net48\NUnitAdapter.exe ${Env:SYSTEM_ARTIFACTSDIRECTORY}\bin\net48"
+    Invoke-Expression "${Env:SYSTEM_ARTIFACTSDIRECTORY}\adapter\bin\net48\NUnitAdapter.exe ${Env:SYSTEM_ARTIFACTSDIRECTORY}\dummy\bin\net48"
 } catch {
     ExitWithCode 1
 }
