@@ -5,6 +5,7 @@
 
 # Repo-specific files
 .build/
+.tests/
 
 # User-specific files
 *.rsuser

@@ -36,6 +36,12 @@ namespace NUnitAdapter
                 engine.WorkDirectory = binPath;
                 engine.Initialize();
 
+                var repoPath = Environment.GetEnvironmentVariable("BUILD_SOURCESDIRECTORY") ?? @"D:\prog\git\hub\dedale\parallel-test-pipelines";
+                var testsPath = Path.Combine(repoPath, ".tests");
+                if (Directory.Exists(testsPath))
+                    Directory.Delete(testsPath, true);
+                Directory.CreateDirectory(testsPath);
+
                 foreach (var path in Directory.GetFiles(binPath, "*Tests.dll"))
                 {
                     Console.WriteLine($"Exploring {path}...");
@@ -67,7 +73,15 @@ namespace NUnitAdapter
                             foreach (var (fixture, ith) in fixtures.Select((fixture, ith) => (fixture, ith)).Where(x => x.ith % jobTotal == jobPosition - 1))
                             {
                                 Console.WriteLine($"Running {fixture} #{ith}...");
-                                xml = runner.Run(new Listener(), TestFilter.Empty);
+
+                                var filterService = engine.Services.GetService<ITestFilterService>();
+                                var filterBuilder = filterService.GetTestFilterBuilder();
+                                filterBuilder.SelectWhere($"test='{fixture}'");
+                                var filter = filterBuilder.GetFilter();
+
+                                xml = runner.Run(new Listener(), filter);
+                                var testPath = Path.Combine(testsPath, $"{fixture}.xml");
+                                File.WriteAllText(testPath, XDocument.Parse(xml.OuterXml).ToString());
                             }
                             runner.Unload();
                         }
