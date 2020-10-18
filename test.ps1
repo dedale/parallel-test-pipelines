@@ -37,13 +37,17 @@ if (Test-Path $TestsPath) {
 }
 
 try {
-    Invoke-Expression "${Env:SYSTEM_ARTIFACTSDIRECTORY}\adapter\bin\netcoreapp3.1\NUnitAdapter.exe ${Env:SYSTEM_ARTIFACTSDIRECTORY}\dummy\bin\netcoreapp3.1"
+    $Command = "${Env:SYSTEM_ARTIFACTSDIRECTORY}\adapter\netcoreapp3.1\NUnitAdapter.exe ${Env:SYSTEM_ARTIFACTSDIRECTORY}\bin\netcoreapp3.1"
+    Write-Host $Command
+    Invoke-Expression $Command
 } catch {
     ExitWithCode 1
 }
 
 try {
-    Invoke-Expression "${Env:SYSTEM_ARTIFACTSDIRECTORY}\adapter\bin\net48\NUnitAdapter.exe ${Env:SYSTEM_ARTIFACTSDIRECTORY}\dummy\bin\net48"
+    $Command = "${Env:SYSTEM_ARTIFACTSDIRECTORY}\adapter\net48\NUnitAdapter.exe ${Env:SYSTEM_ARTIFACTSDIRECTORY}\bin\net48"
+    Write-Host $Command
+    Invoke-Expression $Command
 } catch {
     ExitWithCode 1
 }

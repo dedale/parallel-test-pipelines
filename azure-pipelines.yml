@@ -63,7 +63,7 @@ stages:
       inputs:
         downloadType: 'single'
         artifactName: 'adapter'
-        downloadPath: '$(System.ArtifactsDirectory)/adapter'
+        downloadPath: '$(System.ArtifactsDirectory)'
   
     - task: DownloadBuildArtifacts@0
       inputs:
@@ -74,7 +74,7 @@ stages:
         branchName: 'refs/heads/main'
         downloadType: 'single'
         artifactName: 'bin'
-        downloadPath: '$(System.ArtifactsDirectory)/dummy'
+        downloadPath: '$(System.ArtifactsDirectory)'
   
     - powershell: .\test.ps1
   
