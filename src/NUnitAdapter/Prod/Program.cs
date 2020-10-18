@@ -38,8 +38,6 @@ namespace NUnitAdapter
 
                 var repoPath = Environment.GetEnvironmentVariable("BUILD_SOURCESDIRECTORY") ?? @"D:\prog\git\hub\dedale\parallel-test-pipelines";
                 var testsPath = Path.Combine(repoPath, ".tests");
-                if (Directory.Exists(testsPath))
-                    Directory.Delete(testsPath, true);
                 Directory.CreateDirectory(testsPath);
 
                 foreach (var path in Directory.GetFiles(binPath, "*Tests.dll"))

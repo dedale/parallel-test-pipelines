@@ -31,6 +31,11 @@ if (-not (Test-Path Env:SYSTEM_ARTIFACTSDIRECTORY)) {
     ExitWithCode 1
 }
 
+$TestsPath = "${Env:BUILD_SOURCESDIRECTORY}\.tests"
+if (Test-Path $TestsPath) {
+    Remove-Item $TestsPath -Recurse
+}
+
 try {
     Invoke-Expression "${Env:BUILD_SOURCESDIRECTORY}\.build\bin\netcoreapp3.1\NUnitAdapter.exe ${Env:SYSTEM_ARTIFACTSDIRECTORY}\bin\netcoreapp3.1"
 } catch {
