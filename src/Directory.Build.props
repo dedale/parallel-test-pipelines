@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <RepoPath>$(MSBuildThisFileDirectory)\..</RepoPath>
+    <BuildPath>$(RepoPath)\.build</BuildPath>
+    <OutputPath>$(BuildPath)\bin</OutputPath>
+	<BaseIntermediateOutputPath>$(BuildPath)\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>

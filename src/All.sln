@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30608.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitAdapter", "NUnitAdapter\Prod\NUnitAdapter.csproj", "{871B27B1-CB55-4E87-B6F7-F15264AAE3B9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{871B27B1-CB55-4E87-B6F7-F15264AAE3B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{871B27B1-CB55-4E87-B6F7-F15264AAE3B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{871B27B1-CB55-4E87-B6F7-F15264AAE3B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{871B27B1-CB55-4E87-B6F7-F15264AAE3B9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AD3D1030-2AD8-4B79-9A55-C145CAB35DFF}
+	EndGlobalSection
+EndGlobal
